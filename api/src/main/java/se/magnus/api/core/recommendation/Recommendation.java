@@ -25,4 +25,28 @@ public class Recommendation {
         this.content = content;
         this.serviceAddress = serviceAddress;
     }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public int getRecommendationId() {
+        return recommendationId;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public int getRate() {
+        return rate;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public String getServiceAddress() {
+        return serviceAddress;
+    }
 }

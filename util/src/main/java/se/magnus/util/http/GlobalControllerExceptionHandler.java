@@ -27,6 +27,7 @@ public class GlobalControllerExceptionHandler {
     }
 
     @ResponseStatus(UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(InvalidInputException.class)
     public @ResponseBody HttpErrorInfo handleInvalidInputException(
             ServerHttpRequest request, InvalidInputException ex
     ) {

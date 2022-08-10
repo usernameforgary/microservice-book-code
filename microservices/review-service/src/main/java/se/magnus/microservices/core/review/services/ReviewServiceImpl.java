@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 public class ReviewServiceImpl implements ReviewService {
+
     private static final Logger LOG = LoggerFactory.getLogger(ReviewServiceImpl.class);
 
     private final ServiceUtil serviceUtil;

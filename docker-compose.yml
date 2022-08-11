@@ -1,8 +1,6 @@
 version: '2.1'
 
 services:
-  # The name of the microservice.
-  # This will also be the hostname of the container in the internal Docker network.
   product:
     build: microservices/product-service
     mem_limit: 512m

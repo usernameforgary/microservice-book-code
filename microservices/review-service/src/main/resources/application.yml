@@ -5,12 +5,28 @@ logging:
   level:
     root: INFO
     se.magnus: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+# Strongly recommend to set this property to "none" in a production environment!
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://localhost:3366/review-db
+    username: user
+    password: pwd
+    hikari:
+      initialization-fail-timeout: 60000
 
 ---
 spring:
   config:
     activate:
       on-profile: docker
+  datasource:
+    url: jdbc:mysql://mysql:3366/review-db
 
 server:
   port: 8080

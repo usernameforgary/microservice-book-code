@@ -122,4 +122,34 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
             return new ArrayList<>();
         }
     }
+
+    @Override
+    public Product createProduct(Product body) {
+        return null;
+    }
+
+    @Override
+    public void deleteProduct(int productId) {
+
+    }
+
+    @Override
+    public Recommendation createRecommendation(Recommendation body) {
+        return null;
+    }
+
+    @Override
+    public void deleteRecommendations(int productId) {
+
+    }
+
+    @Override
+    public Review createReview(Review body) {
+        return null;
+    }
+
+    @Override
+    public void deleteReviews(int productId) {
+
+    }
 }

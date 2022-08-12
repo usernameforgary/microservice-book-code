@@ -8,6 +8,7 @@ import se.magnus.api.core.product.Product;
 import se.magnus.api.core.product.ProductService;
 import se.magnus.api.exceptions.InvalidInputException;
 import se.magnus.api.exceptions.NotFoundException;
+import se.magnus.microservices.core.product.persistence.ProductRepository;
 import se.magnus.util.http.ServiceUtil;
 
 @RestController
@@ -17,8 +18,18 @@ public class ProductServiceImpl implements ProductService {
 
     private final ServiceUtil serviceUtil;
 
+    private final ProductRepository repository;
+
+    private final ProductMapper mapper;
+
     @Autowired
-    public ProductServiceImpl(ServiceUtil serviceUtil) {
+    public ProductServiceImpl(
+            ProductRepository repository,
+            ProductMapper mapper,
+            ServiceUtil serviceUtil
+    ) {
+        this.repository = repository;
+        this.mapper = mapper;
         this.serviceUtil = serviceUtil;
     }
 
@@ -40,5 +51,15 @@ public class ProductServiceImpl implements ProductService {
                 123,
                 serviceUtil.getServiceAddress()
         );
+    }
+
+    @Override
+    public Product createProduct(Product body) {
+        return null;
+    }
+
+    @Override
+    public void deleteProduct(int productId) {
+
     }
 }

@@ -70,6 +70,19 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
         return createProductAggregate(product, recommendations, reviews, serviceUtil.getServiceAddress());
     }
 
+    @Override
+    public void deleteProduct(int productId) {
+        LOG.debug("deleteCompositeProduct: Deletes a product aggregate for productId: {}", productId);
+
+        integration.deleteProduct(productId);
+
+        integration.deleteRecommendations(productId);
+
+        integration.deleteReviews(productId);
+
+        LOG.debug("deleteCompositeProduct: aggregate entities deleted for productId: {}", productId);
+    }
+
     private ProductAggregate createProductAggregate(
             Product product,
             List<Recommendation> recommendations,

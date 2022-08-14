@@ -25,7 +25,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
-      myslq:
+      mysql:
         condition: service_healthy
 
   product-composite:
@@ -48,7 +48,7 @@ services:
       timeout: 2s
       retries: 60
 
-  myslq:
+  mysql:
     image: mysql:5.7.32
     mem_limit: 512m
     ports:

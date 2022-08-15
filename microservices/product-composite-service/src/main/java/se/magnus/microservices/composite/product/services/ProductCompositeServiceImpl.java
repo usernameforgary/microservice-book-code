@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.logging.Level.FINE;
+
 @RestController
 public class ProductCompositeServiceImpl implements ProductCompositeService {
     private static final Logger LOG = LoggerFactory.getLogger(ProductCompositeServiceImpl.class);
@@ -66,29 +68,35 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
     }
 
     @Override
-    public ProductAggregate getProduct(int productId) {
-        Product product = integration.getProduct(productId);
-        if(product == null) {
-            throw new NotFoundException("No product found for productId: " + productId);
-        }
-
-        List<Recommendation> recommendations = integration.getRecommendations(productId);
-        List<Review> reviews = integration.getReviews(productId);
-
-        return createProductAggregate(product, recommendations, reviews, serviceUtil.getServiceAddress());
+    public Mono<ProductAggregate> getProduct(int productId) {
+        LOG.info("Will get composite product info for product.id={}", productId);
+        return Mono.zip(
+                values -> createProductAggregate((Product) values[0], (List<Recommendation>) values[1], (List<Review>) values[2], serviceUtil.getServiceAddress()),
+                integration.getProduct(productId),
+                integration.getRecommendations(productId).collectList(),
+                integration.getReviews(productId).collectList())
+                .doOnError(ex -> LOG.warn("getCompositeProduct failed: {}", ex.toString()))
+                .log(LOG.getName(), FINE);
     }
 
     @Override
-    public void deleteProduct(int productId) {
-        LOG.debug("deleteCompositeProduct: Deletes a product aggregate for productId: {}", productId);
+    public Mono<Void> deleteProduct(int productId) {
+        try {
 
-        integration.deleteProduct(productId);
+            LOG.debug("deleteCompositeProduct: Deletes a product aggregate for productId: {}", productId);
 
-        integration.deleteRecommendations(productId);
+            return Mono.zip(
+                    r -> "",
+                    integration.deleteProduct(productId),
+                    integration.deleteRecommendations(productId),
+                    integration.deleteReviews(productId))
+                    .doOnError(ex -> LOG.warn("delete failed: {}", ex.toString()))
+                    .log(LOG.getName(), FINE).then();
 
-        integration.deleteReviews(productId);
-
-        LOG.debug("deleteCompositeProduct: aggregate entities deleted for productId: {}", productId);
+        } catch (RuntimeException re) {
+            LOG.warn("deleteCompositeProduct failed: {}", re.toString());
+            throw re;
+        }
     }
 
     private ProductAggregate createProductAggregate(

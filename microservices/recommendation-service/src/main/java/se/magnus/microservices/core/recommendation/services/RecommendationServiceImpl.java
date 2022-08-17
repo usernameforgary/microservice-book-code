@@ -14,7 +14,6 @@ import se.magnus.microservices.core.recommendation.persistence.RecommendationEnt
 import se.magnus.microservices.core.recommendation.persistence.RecommendationRepository;
 import se.magnus.util.http.ServiceUtil;
 
-import java.util.List;
 import java.util.logging.Level;
 
 @RestController

@@ -26,7 +26,10 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
     private final ProductCompositeIntegration integration;
 
     @Autowired
-    public ProductCompositeServiceImpl(ServiceUtil serviceUtil, ProductCompositeIntegration integration) {
+    public ProductCompositeServiceImpl(
+            ServiceUtil serviceUtil,
+            ProductCompositeIntegration integration
+    ) {
         this.serviceUtil = serviceUtil;
         this.integration = integration;
     }

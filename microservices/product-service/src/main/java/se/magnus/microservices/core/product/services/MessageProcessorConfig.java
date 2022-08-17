@@ -1,5 +1,6 @@
 package se.magnus.microservices.core.product.services;
 
+import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,6 @@ import se.magnus.api.core.product.ProductService;
 import se.magnus.api.event.Event;
 import se.magnus.api.exceptions.EventProcessingException;
 
-import java.util.function.Consumer;
-
 @Configuration
 public class MessageProcessorConfig {
 
@@ -21,7 +20,7 @@ public class MessageProcessorConfig {
 
     @Autowired
     public MessageProcessorConfig(ProductService productService) {
-       this.productService = productService;
+        this.productService = productService;
     }
 
     @Bean
@@ -30,16 +29,19 @@ public class MessageProcessorConfig {
             LOG.info("Process message created at {}...", event.getEventCreatedAt());
 
             switch (event.getEventType()) {
+
                 case CREATE:
                     Product product = event.getData();
                     LOG.info("Create product with ID: {}", product.getProductId());
                     productService.createProduct(product).block();
                     break;
+
                 case DELETE:
                     int productId = event.getKey();
                     LOG.info("Delete recommendations with ProductID: {}", productId);
                     productService.deleteProduct(productId).block();
                     break;
+
                 default:
                     String errorMessage = "Incorrect event type: " + event.getEventType() + ", expected a CREATE or DELETE event";
                     LOG.warn(errorMessage);
@@ -47,6 +49,7 @@ public class MessageProcessorConfig {
             }
 
             LOG.info("Message processing done!");
+
         };
     }
 }

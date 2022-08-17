@@ -7,12 +7,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 public interface RecommendationService {
-    @PostMapping(
-            value = "/recommendation",
-            consumes = "application/json",
-            produces = "application/json"
-    )
-    Mono<Recommendation> createRecommendation(@RequestBody Recommendation body);
+    Mono<Recommendation> createRecommendation(Recommendation body);
 
     @GetMapping(
             value = "/recommendation",
@@ -22,7 +17,5 @@ public interface RecommendationService {
             @RequestParam(value = "productId") int productId
     );
 
-
-    @DeleteMapping(value = "/recommendation")
-    Mono<Void> deleteRecommendations(@RequestParam(value = "productId") int productId);
+    Mono<Void> deleteRecommendations(int productId);
 }

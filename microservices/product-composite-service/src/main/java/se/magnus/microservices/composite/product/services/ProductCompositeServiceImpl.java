@@ -9,7 +9,6 @@ import se.magnus.api.composite.product.*;
 import se.magnus.api.core.product.Product;
 import se.magnus.api.core.recommendation.Recommendation;
 import se.magnus.api.core.review.Review;
-import se.magnus.api.exceptions.NotFoundException;
 import se.magnus.util.http.ServiceUtil;
 
 import java.util.ArrayList;
@@ -20,6 +19,7 @@ import static java.util.logging.Level.FINE;
 
 @RestController
 public class ProductCompositeServiceImpl implements ProductCompositeService {
+
     private static final Logger LOG = LoggerFactory.getLogger(ProductCompositeServiceImpl.class);
 
     private final ServiceUtil serviceUtil;
@@ -72,6 +72,7 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
     @Override
     public Mono<ProductAggregate> getProduct(int productId) {
+
         LOG.info("Will get composite product info for product.id={}", productId);
         return Mono.zip(
                 values -> createProductAggregate((Product) values[0], (List<Recommendation>) values[1], (List<Review>) values[2], serviceUtil.getServiceAddress()),
@@ -84,6 +85,7 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
     @Override
     public Mono<Void> deleteProduct(int productId) {
+
         try {
 
             LOG.debug("deleteCompositeProduct: Deletes a product aggregate for productId: {}", productId);

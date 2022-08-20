@@ -91,7 +91,6 @@ spring.cloud.stream.kafka.binder:
   brokers: 127.0.0.1
   defaultBrokerPort: 9092
 
-
 spring.rabbitmq:
   host: 127.0.0.1
   port: 5672

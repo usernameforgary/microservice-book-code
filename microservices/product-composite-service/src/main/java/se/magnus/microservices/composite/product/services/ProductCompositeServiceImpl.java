@@ -19,7 +19,6 @@ import static java.util.logging.Level.FINE;
 
 @RestController
 public class ProductCompositeServiceImpl implements ProductCompositeService {
-
     private static final Logger LOG = LoggerFactory.getLogger(ProductCompositeServiceImpl.class);
 
     private final ServiceUtil serviceUtil;
@@ -36,7 +35,9 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
     @Override
     public Mono<Void> createProduct(ProductAggregate body) {
+
         try {
+
             List<Mono> monoList = new ArrayList<>();
 
             LOG.debug("createCompositeProduct: creates a new composite entity for productId: {}", body.getProductId());
@@ -44,14 +45,14 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
             Product product = new Product(body.getProductId(), body.getName(), body.getWeight(), null);
             monoList.add(integration.createProduct(product));
 
-            if(body.getRecommendations() != null) {
+            if (body.getRecommendations() != null) {
                 body.getRecommendations().forEach(r -> {
                     Recommendation recommendation = new Recommendation(body.getProductId(), r.getRecommendationId(), r.getAuthor(), r.getRate(), r.getContent(), null);
                     monoList.add(integration.createRecommendation(recommendation));
                 });
             }
 
-            if(body.getReviews() != null) {
+            if (body.getReviews() != null) {
                 body.getReviews().forEach(r -> {
                     Review review = new Review(body.getProductId(), r.getReviewId(), r.getAuthor(), r.getSubject(), r.getContent(), null);
                     monoList.add(integration.createReview(review));
@@ -65,7 +66,7 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
                     .then();
 
         } catch (RuntimeException re) {
-            LOG.warn("createCompositeProduct failed", re);
+            LOG.warn("createCompositeProduct failed: {}", re.toString());
             throw re;
         }
     }
@@ -104,26 +105,26 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
         }
     }
 
-    private ProductAggregate createProductAggregate(
-            Product product,
-            List<Recommendation> recommendations,
-            List<Review> reviews,
-            String serviceAddress
-    ) {
+    private ProductAggregate createProductAggregate(Product product, List<Recommendation> recommendations, List<Review> reviews, String serviceAddress) {
+
+        // 1. Setup product info
         int productId = product.getProductId();
         String name = product.getName();
         int weight = product.getWeight();
 
-        List<RecommendationSummary> recommendationSummaries =
-                (recommendations == null) ? null : recommendations.stream()
-                    .map(r -> new RecommendationSummary(r.getRecommendationId(), r.getAuthor(), r.getRate(), r.getContent()))
-                    .collect(Collectors.toList());
+        // 2. Copy summary recommendation info, if available
+        List<RecommendationSummary> recommendationSummaries = (recommendations == null) ? null :
+                recommendations.stream()
+                        .map(r -> new RecommendationSummary(r.getRecommendationId(), r.getAuthor(), r.getRate(), r.getContent()))
+                        .collect(Collectors.toList());
 
-        List<ReviewSummary> reviewSummaries =
-                (reviews == null) ? null : reviews.stream()
-                    .map(r -> new ReviewSummary(r.getReviewId(), r.getAuthor(), r.getSubject(), r.getContent()))
-                    .collect(Collectors.toList());
+        // 3. Copy summary review info, if available
+        List<ReviewSummary> reviewSummaries = (reviews == null)  ? null :
+                reviews.stream()
+                        .map(r -> new ReviewSummary(r.getReviewId(), r.getAuthor(), r.getSubject(), r.getContent()))
+                        .collect(Collectors.toList());
 
+        // 4. Create info regarding the involved microservices addresses
         String productAddress = product.getServiceAddress();
         String reviewAddress = (reviews != null && reviews.size() > 0) ? reviews.get(0).getServiceAddress() : "";
         String recommendationAddress = (recommendations != null && recommendations.size() > 0) ? recommendations.get(0).getServiceAddress() : "";
